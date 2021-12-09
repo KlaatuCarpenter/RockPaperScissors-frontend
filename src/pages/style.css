@@ -1,0 +1,36 @@
+.home {
+    display: flex;
+    padding-top: 2%;
+    background-image: linear-gradient(
+        120deg,
+        white,
+        black
+    );
+    min-height: 100vh;
+}
+
+.justify-content-end {
+    justify-content: end;
+}
+
+/* Large */
+.choice {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+  }
+  
+  /* Medium screens */
+  @media all and (max-width: 800px) {
+    .choice {
+      justify-content: space-around;
+    }
+  }
+  
+  /* Small screens */
+  @media all and (max-width: 500px) {
+    .choice {
+      flex-direction: column;
+    }
+  }
+
