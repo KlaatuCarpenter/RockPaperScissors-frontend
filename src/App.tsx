@@ -4,12 +4,11 @@ import Home from './pages/Home';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { brown } from '@mui/material/colors';
 import { DAppProvider, Mumbai } from "@usedapp/core";
-import dotenv from 'dotenv';
-dotenv.config();
 
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL || "https://polygon-mumbai.alchemyapi.io/v2/your-api-key"
 
-const config = {
+const MUMBAI_RPC_URL = process.env.REACT_APP_MUMBAI_RPC_URL || "https://polygon-mumbai.alchemyapi.io/v2/your-api-key"
+
+const configUseDapp = {
   networks: [Mumbai],
   readOnlyChainId: Mumbai.chainId,
   readOnlyUrls: {
@@ -32,7 +31,7 @@ const theme = createTheme({
 function App() {
 
   return (
-    <DAppProvider config={config}>
+    <DAppProvider config={configUseDapp}>
       <ThemeProvider theme={theme}>
         <Home />
       </ThemeProvider>

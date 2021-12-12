@@ -1,5 +1,4 @@
-import React from "react"
-import { Grid } from "@mui/material";
+import React, { useEffect, useState } from "react"
 import rock from "../media/rock.png";
 import paper from "../media/paper.png";
 import scissors from "../media/scissors.png";
@@ -8,29 +7,34 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
+import { playersChoice, ChoiceObserver } from './Move/PlayersMove'
 
 const images = [
     {
         url: rock,
         title: 'Rock',
         width: '25%',
+        choiceNo: '1',
     },
     {
         url: paper,
         title: 'Paper',
         width: '25%',
+        choiceNo: '2',
+
     },
     {
         url: scissors,
         title: 'Scissors',
         width: '25%',
+        choiceNo: '3',
     }
 
 ]
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
     position: 'relative',
-    height: 250,
+    height: 270,
     '&:hover, &.Mui-focusVisible': {
         zIndex: 1,
         '& .MuiImageBackdrop-root': {
@@ -80,44 +84,64 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
 
 const ImageMarked = styled('span')(({ theme }) => ({
     height: 3,
-    width: 18,
+    width: 40,
     backgroundColor: theme.palette.common.white,
     position: 'absolute',
     bottom: -2,
-    left: 'calc(50% - 9px)',
+    left: 'calc(50% - 20px)',
     transition: theme.transitions.create('opacity'),
 }));
 
 export function Choice() {
+
+    const [choice, setChoice] = useState<number>(0)
+
+    const onChoiceUpdated: ChoiceObserver = (choice: number) => {
+        setChoice(choice)
+    }
+
+    useEffect(() => {
+        playersChoice.attach(onChoiceUpdated)
+    }, [])
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        const choiceToSet = event.currentTarget.id
+        playersChoice.update(Number(choiceToSet))
+    }
+
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, justifyContent: 'space-evenly' }} p={3} m={3}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, justifyContent: 'space-around' }} px={3} py={1}>
             {images.map((image) => (
-                <ImageButton
-                    focusRipple
-                    key={image.title}
-                    style={{
-                        width: image.width,
-                    }}
-                >
-                    <ImageSrc style={{ backgroundImage: `url(${image.url})` }} />
-                    <ImageBackdrop className="MuiImageBackdrop-root" />
-                    <Image>
-                        <Typography
-                            component="span"
-                            variant="subtitle1"
-                            color="inherit"
-                            sx={{
-                                position: 'relative',
-                                p: 4,
-                                pt: 2,
-                                pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-                            }}
-                        >
-                            {image.title}
-                            <ImageMarked className="MuiImageMarked-root" />
-                        </Typography>
-                    </Image>
-                </ImageButton>
+                    <ImageButton
+                        focusRipple
+                        id={image.choiceNo}
+                        key={image.title}
+                        style={{
+                            width: image.width,
+                        }}
+                        onClick={handleClick}
+                    >
+                        <ImageSrc style={{ backgroundImage: `url(${image.url})` }} />
+                        {(choice === Number(image.choiceNo)) ? (<></>) : (<ImageBackdrop className="MuiImageBackdrop-root" />)}
+                        <Image>
+                            <Typography
+                                component="span"
+                                variant="subtitle1"
+                                color="inherit"
+                                sx={{
+                                    position: 'relative',
+                                    p: 4,
+                                    pt: 2,
+                                    pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
+                                }}
+                            >
+                                {image.title}
+                                {(choice === Number(image.choiceNo)) ? (<ImageMarked className="MuiImageMarked-root" />) : (<></>)}
+                            </Typography>
+
+                        </Image>
+                    </ImageButton>
             ))}
         </Box>
     );

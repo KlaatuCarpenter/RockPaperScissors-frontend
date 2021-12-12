@@ -3,6 +3,7 @@ import { ConnectButton } from "../components/ConnectButton";
 import { Choice } from "../components/Choice";
 import { Opponent } from "../components/Opponent";
 import { Commit } from "../components/Commit"
+import { Wager } from "../components/Wager"
 import './style.css';
 import { Container, Box } from "@mui/material";
 
@@ -12,6 +13,7 @@ export default function Home() {
             <Container fixed>
                 <ConnectButton />
                 <Opponent />
+                <Wager />
                 <Choice />
                 <Commit />
             </Container>

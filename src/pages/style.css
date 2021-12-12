@@ -13,12 +13,22 @@
     justify-content: end;
 }
 
+.justify-content-center {
+  justify-content: center;
+}
+
+
+
 /* Large */
 .choice {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
   }
+
+.input-field {
+  max-width: 100%;
+}
   
   /* Medium screens */
   @media all and (max-width: 800px) {
@@ -33,4 +43,6 @@
       flex-direction: column;
     }
   }
+
+  
 
