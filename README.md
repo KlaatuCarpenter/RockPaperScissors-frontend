@@ -1,5 +1,3 @@
-Mumbai address of the contract: 0x82F0847718804CDC9ED8060E50B36688c16DbDC1 
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
