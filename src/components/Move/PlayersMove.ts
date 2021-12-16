@@ -4,6 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber"
 export type ChoiceObserver = (choice: number) => void
 export type OpponentObserver = (opponent: string) => void
 export type WagerObserver = (wager: BigNumber) => void
+export type GameObserver = (finished: boolean) => void
 
 export class PlayersChoice {
     private observers: ChoiceObserver[] = []
@@ -53,8 +54,26 @@ export class PlayersOpponent {
     }
 }
 
+
+export class GameFinished {
+    private observers: GameObserver[] = []
+
+    public attach(observer: GameObserver) {
+        this.observers.push(observer)
+    }
+
+    public update(newGameSatus: boolean) {
+        this.notify(newGameSatus)
+    }
+
+    private notify(gameStatus: boolean) {
+        this.observers.forEach(observer => observer(gameStatus))
+    }
+}
+
 const playersOpponent = new PlayersOpponent()
 const playersChoice = new PlayersChoice()
 const playersWager = new PlayersWager()
+const gameFinished = new GameFinished()
 
-export { playersChoice, playersWager, playersOpponent }
+export { playersChoice, playersWager, playersOpponent, gameFinished }

@@ -6,28 +6,29 @@ import "../pages/style.css"
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
-import Typography from '@mui/material/Typography';
 import { playersChoice, ChoiceObserver } from './Move/PlayersMove'
+import { Button } from "@mui/material";
+import Stack from '@mui/material/Stack';
 
-const images = [
+export const images = [
     {
         url: rock,
         title: 'Rock',
         width: '25%',
-        choiceNo: '1',
+        choiceNo: 1,
     },
     {
         url: paper,
         title: 'Paper',
         width: '25%',
-        choiceNo: '2',
+        choiceNo: 2,
 
     },
     {
         url: scissors,
         title: 'Scissors',
         width: '25%',
-        choiceNo: '3',
+        choiceNo: 3,
     }
 
 ]
@@ -49,48 +50,6 @@ const ImageButton = styled(ButtonBase)(({ theme }) => ({
     },
 }));
 
-const ImageSrc = styled('span')({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-});
-
-const Image = styled('span')(({ theme }) => ({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.palette.common.white,
-}));
-
-const ImageBackdrop = styled('span')(({ theme }) => ({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: theme.palette.common.black,
-    opacity: 0.3,
-    transition: theme.transitions.create('opacity'),
-}));
-
-const ImageMarked = styled('span')(({ theme }) => ({
-    height: 3,
-    width: 40,
-    backgroundColor: theme.palette.common.white,
-    position: 'absolute',
-    bottom: -2,
-    left: 'calc(50% - 20px)',
-    transition: theme.transitions.create('opacity'),
-}));
 
 export function Choice() {
 
@@ -110,39 +69,32 @@ export function Choice() {
         playersChoice.update(Number(choiceToSet))
     }
 
-    return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, justifyContent: 'space-around' }} px={3} py={1}>
-            {images.map((image) => (
-                    <ImageButton
-                        focusRipple
-                        id={image.choiceNo}
-                        key={image.title}
-                        style={{
-                            width: image.width,
-                        }}
-                        onClick={handleClick}
-                    >
-                        <ImageSrc style={{ backgroundImage: `url(${image.url})` }} />
-                        {(choice === Number(image.choiceNo)) ? (<></>) : (<ImageBackdrop className="MuiImageBackdrop-root" />)}
-                        <Image>
-                            <Typography
-                                component="span"
-                                variant="subtitle1"
-                                color="inherit"
-                                sx={{
-                                    position: 'relative',
-                                    p: 4,
-                                    pt: 2,
-                                    pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-                                }}
-                            >
-                                {image.title}
-                                {(choice === Number(image.choiceNo)) ? (<ImageMarked className="MuiImageMarked-root" />) : (<></>)}
-                            </Typography>
 
-                        </Image>
-                    </ImageButton>
+
+    return (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, justifyContent: 'space-evenly' }} px={3} py={1}>
+            
+            {images.map((image) => (
+                <div className="choice">
+                    {choice === image.choiceNo ? (
+                        <>
+                            <img src={image.url} alt={image.title} className="image" style={{ opacity: 0.3 }}></img>
+                            <div className="middle" style={{ opacity: 1 }}>
+                                <Button variant="contained" id={image.choiceNo.toString()} key={image.choiceNo} onClick={handleClick} >{image.title}</Button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <img src={image.url} alt={image.title} className="image"></img>
+                            <div className="middle">
+                                <Button variant="outlined" id={image.choiceNo.toString()} key={image.choiceNo} onClick={handleClick} >{image.title}</Button>
+                            </div>
+                        </>
+                    )}
+
+                </div>
             ))}
+            
         </Box>
     );
 }

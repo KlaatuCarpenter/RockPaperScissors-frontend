@@ -11,21 +11,21 @@ import { shortenIfAddress, useEthers } from '@usedapp/core';
 
 export function Opponent() {
 
+    const { account } = useEthers()
+
     const [opponent, setOpponent] = useState<string>(ethers.constants.AddressZero)
     const [addressIsValid, setAddressIsValid] = useState<string>('Input an address of a player you want to play with')
 
-    const onOpponentUpdated: OpponentObserver = (opponent: string) => {
-        setOpponent(opponent)
-    }
-
+    /// Share the state with other observers - components
+    const onOpponentUpdated: OpponentObserver = (opponent: string) => { setOpponent(opponent) }
     useEffect(() => {
         playersOpponent.attach(onOpponentUpdated)
     }, [])
 
-    const formatAddress = () => {
-        return shortenIfAddress(opponent)
-    }
-
+    /// If the user changes reset the opponent
+    useEffect(() => {
+        setOpponent(ethers.constants.AddressZero)
+    }, [account])
 
     const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -34,8 +34,9 @@ export function Opponent() {
             const opponentToSet = data.get("opponent")
             ethers.utils.getAddress(String(opponentToSet))
             playersOpponent.update(String(opponentToSet))
+            if (opponentToSet === account) throw "It is not possible to play with yourself"
             setAddressIsValid("Opponent's address is valid")
-        } catch(err) {
+        } catch (err) {
             setAddressIsValid("Input valid opponent's address...")
         }
     }
@@ -46,7 +47,7 @@ export function Opponent() {
                 <form onChange={handleChange}>
                     <InputLabel htmlFor="opponent">{addressIsValid}</InputLabel>
                     <Input fullWidth name="opponent" id="opponent" aria-describedby="Input an address of an opponent" />
-                    <FormHelperText>Opponent: {formatAddress()}</FormHelperText>
+                    <FormHelperText>Opponent: {shortenIfAddress(opponent)}</FormHelperText>
                 </form>
             </FormControl>
         </Box>

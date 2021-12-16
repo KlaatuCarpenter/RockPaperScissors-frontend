@@ -6,7 +6,6 @@ import { ethers } from "ethers"
 import { playersChoice, playersOpponent, ChoiceObserver, OpponentObserver, playersWager, WagerObserver } from './Move/PlayersMove'
 import { initTransaction } from "../helpers/initTransaction";
 import { useEthers } from "@usedapp/core";
-import { randomBytes } from "crypto";
 
 
 export function Commit() {
@@ -53,42 +52,47 @@ export function Commit() {
     /// Send transaction to commit a move
     const commitMove = async () => {
         setLoading(true)
-        if (!chainId) throw "Connection error"
-        if (!account) throw "No account connected"
+        if (!chainId) {
+            setLoading(false)
+            console.log("Connection error. No chainId.")
+            throw "Connection error"
+        } 
+        if (!account) {
+            setLoading(false)
+            console.log("No account connected")
+            throw "No account connected"
+        } 
         const gameContract = await initTransaction(chainId)
-
-        const secretSalt = randomBytes(32)
+        const randomSalt = ethers.utils.randomBytes(32)
+        const secretSalt = ethers.utils.hexlify(randomSalt)
+        console.log(secretSalt)
         const blindedMove = ethers.utils.solidityKeccak256(["uint8", "bytes32"], [choice, secretSalt])
-        await gameContract.move(blindedMove, wager, opponent)
+        try {
+            await gameContract.move(blindedMove, wager, opponent)
+        } catch(err) {
+            console.log(err)
+        }
 
         /// Store the move specification in local storage.
         /// It will be needed to reveal and prevent user from trying to commit without reveal.
+        
         const accountMove = JSON.stringify({ choice: choice, secret: secretSalt, revealed: false })
         localStorage.setItem(account, accountMove)
-        console.log(localStorage.getItem(account))
         setLoading(false);
     }
 
 
     return (
-        <Box display="flex" p={3} m={3} className="justify-content-center">
+        <Box display="flex" className="justify-content-center" pt={1}>
             <Box>
                 <LoadingButton
                     onClick={commitMove}
                     loading={loading}
                     variant="contained"
-                    disabled={disabled}
                 >
                     Commit Move
                 </LoadingButton>
             </Box>
-            {revealed 
-            ? (<></>) 
-            : (
-                <Box>
-                    <p>It is not possible to commit. Reveal first.</p>
-                </Box>
-            )}
         </Box>
     );
 }
