@@ -1,15 +1,14 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useEthers, shortenIfAddress } from "@usedapp/core";
-import { useBalance, useMove } from "./hooks/useAccountInfo";
-import { useEffect, useState } from "react"
-import { initTransaction } from "../helpers/initTransaction"
+import { useMove } from "./hooks/useAccountInfo";
+
 import { images } from "./Choice"
 import { Reveal } from "./Reveal"
 
 import "../pages/style.css"
 
 export function GameInfo() {
-    const { account, chainId } = useEthers()
+    const { account } = useEthers()
 
     const [move,
         wager,

@@ -1,16 +1,12 @@
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
-import { FunctionComponent, useState } from "react";
-import { ChainId, useEthers } from "@usedapp/core"
+import { useState } from "react";
+import { useEthers } from "@usedapp/core"
 import { initTransaction } from "../helpers/initTransaction"
 import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Input from '@mui/material/Input';
-import FormHelperText from '@mui/material/FormHelperText';
-import { useBalance, useMove } from "./hooks/useAccountInfo";
 import { utils } from "ethers"
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -22,8 +18,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 export function Deposit() {
 
     const { account, chainId } = useEthers()
-    const balanceBN = useBalance()
-    const balance = balanceBN.toString()
 
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)

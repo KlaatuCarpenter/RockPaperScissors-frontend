@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { ethers } from "ethers"
 import { useEthers } from "@usedapp/core"
 import LoadingButton from '@mui/lab/LoadingButton'
-import { initTransaction } from "../helpers/initTransaction"
+import { initTransaction, waitForTransaction } from "../helpers/initTransaction"
 
 export function Reveal() {
 
@@ -14,6 +14,7 @@ export function Reveal() {
     const [secret, setSecret] = useState(ethers.constants.HashZero)
     const [choice, setChoice] = useState(0)
 
+    /// Load players move from local storage into state
     const getPlayersMove = async () => {
         let success = false
         if (!account) throw "No account connected"
@@ -28,17 +29,12 @@ export function Reveal() {
         choice === parsedPlayersMove["choice"]) {
             success = true    
         }
-        console.log(parsedPlayersMove)
         return success
     }
 
     useEffect(() => {
         getPlayersMove()
     },[account])
-
-    console.log(secret)
-  
-
 
     /// Send reveal transaction
     const revealMove = async () => {
@@ -49,14 +45,14 @@ export function Reveal() {
         setLoading(true)
         const gameContract = await initTransaction(chainId)
         try {
-            gameContract.reveal(choice, secret)
+            const tx = await gameContract.reveal(choice, secret)
+            const txReceipt = await waitForTransaction(tx.hash, chainId)
+            console.log(txReceipt)
         } catch (err) {
             throw err
         }
         setLoading(false)
     }
-
-
 
     return (
         <Box display="flex" pt={1}>

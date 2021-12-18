@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useEthers } from "@usedapp/core"
 import { initTransaction } from "../helpers/initTransaction"
 
-import { useBalance } from "./hooks/useAccountInfo";
-
 export function Withdraw() {
 
     const { account, chainId } = useEthers()
@@ -20,7 +18,7 @@ export function Withdraw() {
         try {
             gameContract.withdraw()
         } catch (err) {
-            throw err
+            console.log(err)
         }
         setLoading(false)
     }

@@ -1,4 +1,3 @@
-import React from "react"
 import Button from '@mui/material/Button';
 import { shortenIfAddress, useEthers } from '@usedapp/core';
 import { Box } from "@mui/system";
@@ -6,7 +5,7 @@ import { styled } from '@mui/material/styles';
 import '../pages/style.css';
 import { Deposit } from "./Deposit"
 import { Withdraw } from "./Withdraw";
-import { useBalance, useMove } from "./hooks/useAccountInfo";
+import { useBalance } from "./hooks/useAccountInfo";
 import { utils } from "ethers"
 
 const AccountButton = styled(Button)({

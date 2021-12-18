@@ -1,28 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useBalance, useMove } from "../components/hooks/useAccountInfo";
-import { utils, constants, providers, ethers } from 'ethers';
-import { useEthers } from "@usedapp/core"
+import { useMove } from "../components/hooks/useAccountInfo";
+import { constants } from 'ethers';
 
 import { Choice } from "../components/Choice"
 import { Opponent } from "../components/Opponent"
 import { Wager } from "../components/Wager"
 import { Commit } from "../components/Commit"
 import { GameInfo } from '../components/GameInfo'
-import { Reveal } from '../components/Reveal'
 import { Result } from "../components/Result"
-import { ShowResult } from "../components/ShowResult"
 
-import { contractInstance, getAlchemyProvider } from "../helpers/initTransaction"
-import { gameFinished, GameObserver } from '../components/Move/PlayersMove'
-
+import { useEthers } from "@usedapp/core"
+import { getGameEndedEvents } from "../helpers/initTransaction"
 
 const steps = [
   {
@@ -41,19 +35,19 @@ const steps = [
 ];
 
 export function VerticalStepper() {
-  const { account, chainId } = useEthers()
   const [activeStep, setActiveStep] = useState(0)
+  const { account } = useEthers()
   
-  const [move,
-    wager,
+  const [,
+    ,
     opponent,
     notRevealed,
-    choice,
-    oppMove,
-    oppWager,
-    oppOpponent,
+    ,
+    ,
+    ,
+    ,
     oppNotRevealed,
-    oppChoice] = useMove()
+    ] = useMove()
 
   if (opponent) {
     if ((activeStep !== 0) && (opponent === constants.AddressZero)) setActiveStep(0)
@@ -61,11 +55,19 @@ export function VerticalStepper() {
     if ((activeStep !== 2) && (opponent !== constants.AddressZero) && !notRevealed && !oppNotRevealed) setActiveStep(2)
   }
 
- console.log(activeStep)
+
+  if (account) {
+    const printItToMe = async () => {
+      const printIt = await getGameEndedEvents(account)
+      console.log(printIt)
+    } 
+    
+    printItToMe()
+  }
+  
 
   return (
     <Box>
-      {/* <ShowResult /> */}
       <Stepper activeStep={activeStep} orientation="vertical">
 
         {/********** Commit a move ***************/}

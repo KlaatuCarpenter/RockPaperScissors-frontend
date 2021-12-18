@@ -3,12 +3,9 @@ import rock from "../media/rock.png";
 import paper from "../media/paper.png";
 import scissors from "../media/scissors.png";
 import "../pages/style.css"
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
 import { playersChoice, ChoiceObserver } from './Move/PlayersMove'
 import { Button } from "@mui/material";
-import Stack from '@mui/material/Stack';
 
 export const images = [
     {
@@ -33,24 +30,6 @@ export const images = [
 
 ]
 
-const ImageButton = styled(ButtonBase)(({ theme }) => ({
-    position: 'relative',
-    height: 270,
-    '&:hover, &.Mui-focusVisible': {
-        zIndex: 1,
-        '& .MuiImageBackdrop-root': {
-            opacity: 0.15,
-        },
-        '& .MuiImageMarked-root': {
-            opacity: 0,
-        },
-        '& .MuiTypography-root': {
-            border: '4px solid currentColor',
-        },
-    },
-}));
-
-
 export function Choice() {
 
     const [choice, setChoice] = useState<number>(0)
@@ -68,8 +47,6 @@ export function Choice() {
         const choiceToSet = event.currentTarget.id
         playersChoice.update(Number(choiceToSet))
     }
-
-
 
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, justifyContent: 'space-evenly' }} px={3} py={1}>

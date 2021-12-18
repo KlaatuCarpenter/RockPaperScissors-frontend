@@ -1,17 +1,26 @@
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useEthers } from "@usedapp/core"
-import { initTransaction } from "../helpers/initTransaction"
-import { ethers, constants } from "ethers";
+import { initTransaction, waitForTransaction } from "../helpers/initTransaction"
 import { Button } from "@mui/material";
 
-import Game from "../build/contracts/Game.json";
-import networkMapping from "../build/deployments/map.json";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
-import { contractInstance, getAlchemyProvider } from "../helpers/initTransaction"
-
-import { gameFinished, GameObserver } from './Move/PlayersMove'
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export function Result() {
 
@@ -20,24 +29,41 @@ export function Result() {
     const [loading, setLoading] = useState(false)
     const [finished, setFinished] = useState(false)
 
-    const onGameStatusUpdated: GameObserver = (finished) => { setFinished(finished) }
-
-    useEffect(() => { gameFinished.attach(onGameStatusUpdated) }, [])
+    useEffect(() => {
+        if (account) {
+            const saved = localStorage.getItem(account)
+            if (saved === "true")
+                setFinished(true)
+        }
+    }, [])
 
     const getResult = async () => {
         if (!account) throw "No account connected"
-        const playersMove = localStorage.getItem(account)
         if (!chainId) throw "Connection error"
         setLoading(true)
         const gameContract = await initTransaction(chainId)
 
         try {
-            gameContract.result()
+            const tx = await gameContract.result()
+            const txReceipt = await waitForTransaction(tx.hash, chainId)
+            console.log(txReceipt)
+
+            localStorage.setItem(account, "true")
+            setFinished(true)
+            // txReceipt.events.find(event => event.event === "GameEnded")
+            // const winner = event.args[0]
+
         } catch (err) {
             throw err
         }
         setLoading(false)
-        gameFinished.update(true)
+    }
+
+    const handleClose = () => {
+        if (account) {
+            localStorage.setItem(account, "false")
+            setFinished(false)
+        }
     }
 
 
@@ -51,6 +77,24 @@ export function Result() {
             >
                 Get the result
             </LoadingButton>
+            <Dialog
+                open={finished}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="result-dialog-slide-description"
+            >
+                <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Let Google help apps determine location. This means sending anonymous
+                        location data to Google, even when no apps are running.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cool</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

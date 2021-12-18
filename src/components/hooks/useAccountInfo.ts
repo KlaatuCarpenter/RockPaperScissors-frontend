@@ -1,7 +1,7 @@
 import networkMapping from "../../build/deployments/map.json";
 import { constants, utils } from "ethers";
 import Game from "../../build/contracts/Game.json";
-import { useEthers, useContractCall, useContractCalls } from "@usedapp/core";
+import { useEthers, useContractCall } from "@usedapp/core";
 
 export function useBalance() {
 
