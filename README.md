@@ -6,7 +6,10 @@ In src/build you can find abi of the smart contract and mapping with last deploy
 
 ## How to run this application
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
-First clone this repository to your local folder.
+First clone this repository to your local folder.  
+
+The app uses Alchemy as a RPC provider. You should provide your api key in .env file. In .env.example you can see the example of .env, which is essential for the app to work.  
+
 Run  
 ```npm install```
 
