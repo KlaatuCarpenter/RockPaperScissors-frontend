@@ -21,16 +21,15 @@ export function Reveal() {
 
     /// Load players move from local storage into state
     const getPlayersMove = async () => {
+        let success = false
         if (!account) {
             setErrorMessage("No account connected")
             setOpenAlert(true)
             throw errorMessage
         }
-        let success = false
         const playersMove = localStorage.getItem(account)
         if (!playersMove) {
             setErrorMessage("Error in loading move from local storage")
-            setOpenAlert(true)
             throw errorMessage
         }
         const parsedPlayersMove = await JSON.parse(playersMove)
@@ -44,7 +43,6 @@ export function Reveal() {
         }
         if (!success) {
             setErrorMessage("Error in loading move from local storage")
-            setOpenAlert(true)
             throw errorMessage
         }
         return success

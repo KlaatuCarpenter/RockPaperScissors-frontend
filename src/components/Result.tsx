@@ -40,7 +40,7 @@ export function Result() {
     const checkGame = async () => {
         if (account) {
             const saved = localStorage.getItem(account)
-            if (saved === "true") {
+            if (saved !== "false") {
                 const gameEndedEvents = await getGameEndedEvents(account)
                 if (gameEndedEvents?.length > 0) setWinner(gameEndedEvents[0]?.args?.winner)
                 setFinished(true)
