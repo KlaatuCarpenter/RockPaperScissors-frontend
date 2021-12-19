@@ -1,6 +1,20 @@
-# Getting Started with Create React App
+# About the project
+This repository contains UI to the smart contract deployed with this code: https://github.com/KlaatuCarpenter/RockPaperScissors
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Build folder 
+In src/build you can find abi of the smart contract and mapping with last deployments.
+
+## How to run this application
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
+First clone this repository to your local folder.
+Run  
+```npm install```
+
+Then   
+```yarn start```
+
+The project is configured to work with deployed on 
+Mumbai testnet smart contract, mapped in file src/build/deployments/map.json
 
 ## Available Scripts
 
