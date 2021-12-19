@@ -1,12 +1,13 @@
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Typography from '@mui/material/Typography';
+
 import { useMove } from "../components/hooks/useAccountInfo";
 import { constants } from 'ethers';
+import { useState } from 'react';
 
 import { Choice } from "../components/Choice"
 import { Opponent } from "../components/Opponent"
@@ -14,9 +15,6 @@ import { Wager } from "../components/Wager"
 import { Commit } from "../components/Commit"
 import { GameInfo } from '../components/GameInfo'
 import { Result } from "../components/Result"
-
-import { useEthers } from "@usedapp/core"
-import { getGameEndedEvents } from "../helpers/initTransaction"
 
 const steps = [
   {
@@ -36,7 +34,6 @@ const steps = [
 
 export function VerticalStepper() {
   const [activeStep, setActiveStep] = useState(0)
-  const { account } = useEthers()
   
   const [,
     ,
@@ -54,17 +51,8 @@ export function VerticalStepper() {
     if ((activeStep !== 1) && (opponent !== constants.AddressZero) && (notRevealed || oppNotRevealed)) setActiveStep(1)
     if ((activeStep !== 2) && (opponent !== constants.AddressZero) && !notRevealed && !oppNotRevealed) setActiveStep(2)
   }
-
-
-  if (account) {
-    const printItToMe = async () => {
-      const printIt = await getGameEndedEvents(account)
-      console.log(printIt)
-    } 
     
-    printItToMe()
-  }
-  
+
 
   return (
     <Box>
@@ -118,11 +106,7 @@ export function VerticalStepper() {
             </Box>
           </StepContent>
         </Step>
-
       </Stepper>
-
-
-
     </Box>
   );
 }

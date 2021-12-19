@@ -1,13 +1,13 @@
 import { LoadingButton } from "@mui/lab";
 import { Box } from "@mui/system";
+import { Snackbar } from '@mui/material';
+import { Alert } from "../helpers/Alert";
+
 import { useState } from "react";
-import { useEthers } from "@usedapp/core"
-import { initTransaction } from "../helpers/initTransaction"
+import { useEthers } from "@usedapp/core";
+import { initTransaction, waitForTransaction } from "../helpers/initTransaction";
 
-import Snackbar from '@mui/material/Snackbar';
-import { Alert } from "../helpers/Alert"
-
-export function Withdraw() {
+export function Terminate() {
 
     const { account, chainId } = useEthers()
 
@@ -15,7 +15,7 @@ export function Withdraw() {
     const [errorMessage, setErrorMessage] = useState("")
     const [openAlert, setOpenAlert] = useState(false)
 
-    const handleWithdraw = async () => {
+    const handleTermination = async () => {
         if (!account) {
             setErrorMessage("No account connected")
             setOpenAlert(true)
@@ -28,9 +28,11 @@ export function Withdraw() {
             throw errorMessage
         }
         setLoading(true)
+
         try {
             const gameContract = await initTransaction(chainId)
-            gameContract.withdraw()
+            const tx = await gameContract.terminateGame()
+            await waitForTransaction(tx.hash, chainId)
         } catch (err) {
             setErrorMessage("Transaction failed")
             console.log(err)
@@ -51,9 +53,9 @@ export function Withdraw() {
         <Box textAlign={"center"}>
             <LoadingButton
                 loading={loading}
-                onClick={handleWithdraw}
+                onClick={handleTermination}
             >
-                Withdraw
+                Terminate the game
             </LoadingButton>
             <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>

@@ -15,12 +15,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import Snackbar from '@mui/material/Snackbar'
+import { Alert } from "../helpers/Alert"
+
 export function Deposit() {
 
     const { account, chainId } = useEthers()
 
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
+    const [openAlert, setOpenAlert] = useState(false)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -33,20 +38,40 @@ export function Deposit() {
 
     const handleDeposit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        if (!account) throw "No account connected"
-        if (!chainId) throw "Connection error"
+        if (!account) {
+            setErrorMessage("No account connected")
+            setOpenAlert(true)
+            throw errorMessage
+        }
+        if (!chainId) {
+            setLoading(false)
+            setErrorMessage("Connection with blockchain failed")
+            setOpenAlert(true)
+            throw errorMessage
+        }
         const data = new FormData(event.currentTarget);
         const amount = utils.parseEther(String(data.get("amount")))
         setLoading(true)
-        const gameContract = await initTransaction(chainId)
+
         try {
+            const gameContract = await initTransaction(chainId)
             gameContract.deposit({ value: amount })
         } catch (err) {
-            throw err
+            setErrorMessage("Transaction failed")
+            console.log(err)
+            setOpenAlert(true)
         }
         setLoading(false)
         setOpen(false)
     }
+
+    ///********** Snackbar with error information *************/
+    const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
 
     return (
         <Box display="flex" className="justify-content-center">
@@ -59,13 +84,13 @@ export function Deposit() {
                             To deposit funds to smart contract, please enter the amount here and sign the transaction with metamask.
                         </DialogContentText>
                         <FormControl fullWidth>
-                        <OutlinedInput
-                                    id="outlined-adornment-amount"
-                                    startAdornment={<InputAdornment position="start">MATIC</InputAdornment>}
-                                    fullWidth
-                                    label="Amount"
-                                    name="amount"
-                                />
+                            <OutlinedInput
+                                id="outlined-adornment-amount"
+                                startAdornment={<InputAdornment position="start">MATIC</InputAdornment>}
+                                fullWidth
+                                label="Amount"
+                                name="amount"
+                            />
                         </FormControl>
                     </DialogContent>
                     <DialogActions>
@@ -74,6 +99,11 @@ export function Deposit() {
                     </DialogActions>
                 </form>
             </Dialog>
+            <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
         </Box >
     )
 }

@@ -65,13 +65,19 @@ export const getGameEndedEvents = async (playerAddress: string) => {
   const contract = await contractInstanceMumbai()
   const provider = await getAlchemyProvider()
 
-  const filter = contract.filters.GameEnded(null, playerAddress)
+  /// Get GameEnded events, where the player took part
+  const filterP1 = contract.filters.GameEnded(null, playerAddress)
+  const filterP2 = contract.filters.GameEnded(null, null, playerAddress)
   const latestBlock = await provider.getBlockNumber()
   const fromBlock = latestBlock - 1000  /// 1000 block is the Alchemy provider limit in Mumbai
-  const events = await contract.queryFilter(filter, fromBlock)
-  console.log(filter)
-  console.log(events)
-
+  const eventsP1 = await contract.queryFilter(filterP1, fromBlock)
+  const eventsP2 = await contract.queryFilter(filterP2, fromBlock)
+  const events = eventsP1.concat(eventsP2)
+  
+  /// Get the latest game (using latest block number) at the beggining of the array
+  events.sort(function(a,b) { 
+    return b.blockNumber - a.blockNumber 
+  })
+  
   return events
-
 }

@@ -1,7 +1,7 @@
 import networkMapping from "../../build/deployments/map.json";
 import { constants, utils } from "ethers";
-import Game from "../../build/contracts/Game.json";
 import { useEthers, useContractCall } from "@usedapp/core";
+import Game from "../../build/contracts/Game.json";
 
 export function useBalance() {
 
@@ -34,7 +34,7 @@ export function useMove() {
 
     const [move,
         wager,
-        timeStamp,
+        ,
         opponent,
         notRevealed,
         choice] =
@@ -48,7 +48,7 @@ export function useMove() {
 
     const [oppMove,
         oppWager,
-        oppTimeStamp,
+        ,
         oppOpponent,
         oppNotRevealed,
         oppChoice] = useContractCall(

@@ -54,19 +54,19 @@ export function Choice() {
             {images.map((image) => (
                 <div className="choice">
                     {choice === image.choiceNo ? (
-                        <>
+                        <div key={image.choiceNo}>
                             <img src={image.url} alt={image.title} className="image" style={{ opacity: 0.3 }}></img>
                             <div className="middle" style={{ opacity: 1 }}>
-                                <Button variant="contained" id={image.choiceNo.toString()} key={image.choiceNo} onClick={handleClick} >{image.title}</Button>
+                                <Button variant="contained" id={image.choiceNo.toString()}  onClick={handleClick} >{image.title}</Button>
                             </div>
-                        </>
+                        </div>
                     ) : (
-                        <>
+                        <div key={image.choiceNo}>
                             <img src={image.url} alt={image.title} className="image"></img>
                             <div className="middle">
-                                <Button variant="outlined" id={image.choiceNo.toString()} key={image.choiceNo} onClick={handleClick} >{image.title}</Button>
+                                <Button variant="outlined" id={image.choiceNo.toString()} onClick={handleClick} >{image.title}</Button>
                             </div>
-                        </>
+                        </div>
                     )}
 
                 </div>
